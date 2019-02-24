@@ -1,5 +1,8 @@
-awk '/Failed/{print $(NF-3)}' /var/log/secure | grep -v awk |sort|uniq -c|awk '{print $2"="$1;}' > /tmp/black.txt
-DEFINE="5"
+month=`date +%b`
+day=`date +%d`
+
+grep "Failed" /var/log/secure | awk -v day=${day} -v month=${month} '{if ($2 == day && $1 == month)  print $(NF-3);}' | grep -v grep | grep -v awk | sort|uniq -c|awk '{print $2"="$1;}' > /tmp/black.txt
+DEFINE="3"
 for i in `cat  /tmp/black.txt`; do
     IP=`echo $i |awk -F= '{print $1}'`
     NUM=`echo $i|awk -F= '{print $2}'`
