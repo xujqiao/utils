@@ -12,3 +12,7 @@ class NotExistException(Exception):
 
 class MissingConfigException(Exception):
     pass
+
+
+class InitFailException(Exception):
+    pass

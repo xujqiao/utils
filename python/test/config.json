@@ -1,7 +1,8 @@
 {
+  "schema": "postgresql",
   "host": "127.0.0.1",
-  "port": 1234,
+  "port": 5432,
   "username": "spring",
-  "password": "hello",
+  "password": "spring_123",
   "db_name": "spring"
 }
