@@ -4,7 +4,7 @@ from dao.exceptions import *
 from dao.config_factory import *
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from test.Resource import *
+from dao.test.Resource import *
 
 
 class DBGateway:

@@ -6,6 +6,10 @@ class NotTheSameException(Exception):
     pass
 
 
+class FileNotExistException(Exception):
+    pass
+
+
 class NotExistException(Exception):
     pass
 

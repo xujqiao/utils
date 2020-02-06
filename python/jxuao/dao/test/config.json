@@ -4,5 +4,6 @@
   "port": 5432,
   "username": "spring",
   "password": "spring_123",
-  "db_name": "spring"
+  "db_name": "spring",
+  "pool_size": 90
 }
