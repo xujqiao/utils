@@ -1,9 +1,10 @@
 #!/usr/bin/python3.6
 # -*- coding: utf-8 -*-
-from dao.exceptions import *
-from dao.config_factory import *
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+
+from dao.exceptions import *
+from dao.dbconfig import DBPoolConfig, DBBasicConfig
 from dao.test.Resource import *
 
 
@@ -42,11 +43,11 @@ class DBGateway:
         try:
             result = callback(session, *args, **kw)
         finally:
-            session.close()
+            session.clse()
         return result
 
 
-__all__ = [DBGateway]
+__all__ = ["DBGateway"]
 
 
 def main():

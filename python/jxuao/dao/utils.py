@@ -3,7 +3,7 @@
 
 import json
 from functools import wraps
-from dao.exceptions import NotTheSameException, FileNotExistException, NotExistException
+from dao.exceptions import NotTheSameException, NotExistException
 
 
 def dict_safe_get(d, k, default=None):

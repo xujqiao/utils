@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
+import os
+
 from dao.utils import *
 
 
@@ -17,31 +19,35 @@ class DBBasicConfig:
     KEY_CHARSET = "charset"
     DEFAULT_CHARSET = "utf8"
 
-    def __init__(self):
-        self.schema = ""
-        self.host = ""
-        self.port = 0
-        self.username = ""
-        self.password = ""
-        self.dbname = ""
-        self.charset = self.DEFAULT_CHARSET
-        self.dsn = ""
-
-    def fromfile(self, filepath, charset="utf8"):
-        with open(filepath, encoding=charset) as myf:
-            config_dict = json.load(myf)
-            self.fromdict(config_dict)
-
-    def fromdict(self, config_dict):
-        self.schema = dict_safe_get(config_dict, DBBasicConfig.KEY_SCHEMA)
-        self.host = dict_safe_get(config_dict, DBBasicConfig.KEY_HOST)
-        self.port = dict_safe_get(config_dict, DBBasicConfig.KEY_PORT)
-        self.username = dict_safe_get(config_dict, DBBasicConfig.KEY_USERNAME)
-        self.password = dict_safe_get(config_dict, DBBasicConfig.KEY_PASSWORD)
-        self.dbname = dict_safe_get(config_dict, DBBasicConfig.KEY_DBNAME)
-        self.charset = dict_safe_get(config_dict, DBBasicConfig.KEY_CHARSET, default=DBBasicConfig.DEFAULT_CHARSET)
+    def __new__(cls, schema, host, port, username, password, dbname, charset):
+        self = object.__new__(cls)
+        self.schema = schema
+        self.host = host
+        self.port = port
+        self.username = username
+        self.password = password
+        self.dbname = dbname
+        self.charset = charset
         self.dsn = "%s://%s:%s@%s:%d/%s?client_encoding=%s" % \
                    (self.schema, self.username, self.password, self.host, self.port, self.dbname, self.charset)
+        return self
+
+    @classmethod
+    def fromfile(cls, filepath, charset="utf8"):
+        with open(filepath, encoding=charset) as myf:
+            d = json.load(myf)
+            return cls.fromdict(d)
+
+    @classmethod
+    def fromdict(cls, d):
+        schema = dict_safe_get(d, DBBasicConfig.KEY_SCHEMA)
+        host = dict_safe_get(d, DBBasicConfig.KEY_HOST)
+        port = dict_safe_get(d, DBBasicConfig.KEY_PORT)
+        username = dict_safe_get(d, DBBasicConfig.KEY_USERNAME)
+        password = dict_safe_get(d, DBBasicConfig.KEY_PASSWORD)
+        dbname = dict_safe_get(d, DBBasicConfig.KEY_DBNAME)
+        charset = dict_safe_get(d, DBBasicConfig.KEY_CHARSET, default=DBBasicConfig.DEFAULT_CHARSET)
+        return cls(schema, host, port, username, password, dbname, charset)
 
     def __str__(self):
         return "{}: {}".format(
@@ -70,7 +76,7 @@ class DBPoolConfig:
     DEFAULT_POOL_TIMEOUT = 30
     DEFAULT_POOL_USE_LIFO = False
 
-    def __init__(self):
+    def __new__(cls, max_overflow, pre_ping, size, recycle, reset_on_return, timeout, use_lifo):
         """
         :param max_overflow=10: the number of connections to allow in
             connection pool "overflow", that is connections that can be
@@ -136,37 +142,60 @@ class DBPoolConfig:
 
                 :ref:`pool_disconnects`
         """
-        self.max_overflow = self.DEFAULT_MAX_OVERFLOW
-        self.pool_pre_ping = self.DEFAULT_POOL_PRE_PING
-        self.pool_size = self.DEFAULT_POOL_SIZE
-        self.pool_recycle = self.DEFAULT_POOL_RECYCLE
-        self.pool_reset_on_return = self.DEFAULT_POOL_RESET_ON_RETURN
-        self.pool_timeout = self.DEFAULT_POOL_TIMEOUT
-        self.pool_use_lifo = self.DEFAULT_POOL_USE_LIFO
+        self = object.__new__(cls)
+        self.max_overflow = max_overflow
+        self.pool_pre_ping = pre_ping
+        self.pool_size = size
+        self.pool_recycle = recycle
+        self.pool_reset_on_return = reset_on_return
+        self.pool_timeout = timeout
+        self.pool_use_lifo = use_lifo
+        return self
 
-    def fromfile(self, filepath, charset="utf8"):
-        with open(filepath, encoding=charset) as myf:
-            config_dict = json.load(myf)
-            self.fromdict(config_dict)
+    @classmethod
+    def fromfile(cls, path, charset="utf8"):
+        with open(path, encoding=charset) as myf:
+            d = json.load(myf)
+            return cls.fromdict(d)
 
-    def fromdict(self, config_dict):
-        self.max_overflow = \
-            dict_safe_get(config_dict, self.KEY_MAX_OVERFLOW, default=DBPoolConfig.DEFAULT_MAX_OVERFLOW)
-        self.pool_pre_ping = \
-            dict_safe_get(config_dict, self.KEY_POOL_PRE_PING, default=DBPoolConfig.DEFAULT_POOL_PRE_PING)
-        self.pool_size = \
-            dict_safe_get(config_dict, self.KEY_POOL_SIZE, default=DBPoolConfig.DEFAULT_POOL_SIZE)
-        self.pool_recycle = \
-            dict_safe_get(config_dict, self.KEY_POOL_RECYCLE, default=DBPoolConfig.DEFAULT_POOL_RECYCLE)
-        self.pool_reset_on_return = \
-            dict_safe_get(config_dict, self.KEY_POOL_RESET_ON_RETURN, default=DBPoolConfig.DEFAULT_POOL_RESET_ON_RETURN)
-        self.pool_timeout = \
-            dict_safe_get(config_dict, self.KEY_POOL_TIMEOUT, default=DBPoolConfig.DEFAULT_POOL_TIMEOUT)
-        self.pool_use_lifo = \
-            dict_safe_get(config_dict, self.KEY_POOL_USE_LIFO, default=DBPoolConfig.DEFAULT_POOL_USE_LIFO)
+    @classmethod
+    def fromdict(cls, d):
+        max_overflow = \
+            dict_safe_get(d, DBPoolConfig.KEY_MAX_OVERFLOW, default=DBPoolConfig.DEFAULT_MAX_OVERFLOW)
+        pre_ping = \
+            dict_safe_get(d, DBPoolConfig.KEY_POOL_PRE_PING, default=DBPoolConfig.DEFAULT_POOL_PRE_PING)
+        size = \
+            dict_safe_get(d, DBPoolConfig.KEY_POOL_SIZE, default=DBPoolConfig.DEFAULT_POOL_SIZE)
+        recycle = \
+            dict_safe_get(d, DBPoolConfig.KEY_POOL_RECYCLE, default=DBPoolConfig.DEFAULT_POOL_RECYCLE)
+        reset_on_return = \
+            dict_safe_get(d, DBPoolConfig.KEY_POOL_RESET_ON_RETURN, default=DBPoolConfig.DEFAULT_POOL_RESET_ON_RETURN)
+        timeout = \
+            dict_safe_get(d, DBPoolConfig.KEY_POOL_TIMEOUT, default=DBPoolConfig.DEFAULT_POOL_TIMEOUT)
+        use_lifo = \
+            dict_safe_get(d, DBPoolConfig.KEY_POOL_USE_LIFO, default=DBPoolConfig.DEFAULT_POOL_USE_LIFO)
+
+        return cls(max_overflow, pre_ping, size, recycle, reset_on_return, timeout, use_lifo)
 
     def __str__(self):
         return "{}: {}".format(
             self.__class__.__name__,
             "&".join([str(key) + "=" + str(value) for key, value in self.__dict__.items()])
         )
+
+
+def get_configs_from_file(filepath, charset="utf8"):
+    if not os.path.isfile(filepath):
+        raise FileNotExistException("file [{}] does not exist".format(filepath))
+    basic_config = DBBasicConfig.fromfile(filepath, charset)
+    pool_config = DBPoolConfig.fromfile(filepath, charset)
+    return basic_config, pool_config
+
+
+__all__ = ["get_configs_from_file", "DBBasicConfig", "DBPoolConfig"]
+
+
+if __name__ == '__main__':
+    filepath = "./test/config.json"
+    config = DBPoolConfig.fromfile(filepath)
+    print(config)

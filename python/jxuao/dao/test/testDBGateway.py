@@ -3,10 +3,9 @@
 
 import time
 
-from dao.config_factory import *
-from dao.dbgateway import DBGateway
+from dao.dbgateway import *
 from dao.utils import *
-
+from dao.dbconfig import *
 from dao.test.Resource import *
 
 
@@ -24,17 +23,17 @@ def query(session, id) -> str:
 if __name__ == '__main__':
     basic, pool = get_configs_from_file("config.json")
     print(pool.pool_size)
-    # db = DBGateway(basic, pool)
+    db = DBGateway(basic, pool)
 
-    # start_id = 1007
-    # end_id = 11007
-    # start_time = time.time()
-    # try:
-    #     for id in range(start_id, end_id):
-    #         db.execute(query, id)
-    # finally:
-    #     end_time = time.time()
-    # print(end_time, start_time)
-    # print((end_id - start_id) / (end_time - start_time))
+    start_id = 1007
+    end_id = 11007
+    start_time = time.time()
+    try:
+        for id in range(start_id, end_id):
+            db.execute(query, id)
+    finally:
+        end_time = time.time()
+    print(end_time, start_time)
+    print((end_id - start_id) / (end_time - start_time))
 
 

@@ -1,4 +1,5 @@
-.idea
+.idea/
+out/
 python.iml
 *.pyc
 test.py
