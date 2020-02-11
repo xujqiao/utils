@@ -20,6 +20,15 @@ def query(session, id) -> str:
     return obj2json(rs)
 
 
+def query2(session) -> list:
+    rs = session.query(Resource) \
+        .filter(Resource.id > 100) \
+        .filter(Resource.title.contains("123")) \
+        .filter(Resource.authors.isnot("1234123")) \
+        .all()
+    return [r for r in rs]
+
+
 if __name__ == '__main__':
     basic, pool = get_configs_from_file("config.json")
     print(pool.pool_size)

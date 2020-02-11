@@ -2,8 +2,11 @@
 # -*- coding: utf-8 -*-
 
 import os
-
+import sys
 from dao.utils import *
+from dao.exceptions import FileNotExistException
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
 class DBBasicConfig:
@@ -199,3 +202,5 @@ if __name__ == '__main__':
     filepath = "./test/config.json"
     config = DBPoolConfig.fromfile(filepath)
     print(config)
+    print(DBBasicConfig.__name__)
+    print(DBBasicConfig.__class__)

@@ -1,9 +1,13 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
+import os
+import sys
 import json
 from functools import wraps
 from dao.exceptions import NotTheSameException, NotExistException
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
 def dict_safe_get(d, k, default=None):
