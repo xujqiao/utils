@@ -1,10 +1,16 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
+import os
+import sys
 import logging
 import logging.config
 
-filepath = "./logging.conf"
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+pwd = os.path.dirname(os.path.abspath(__file__))
+filepath = pwd + "/logging.conf"
 logging.config.fileConfig(filepath)
 logger = logging.getLogger("cse")
 

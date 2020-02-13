@@ -8,7 +8,7 @@ from sqlalchemy.orm import sessionmaker
 
 from dao.exceptions import *
 from dao.dbconfig import DBPoolConfig, DBBasicConfig
-from dao.test.Resource import *
+from app.Resource import *
 
 # 相对路径的添加，保证了此处模块导入路径不变
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -72,9 +72,10 @@ def main():
     engine = create_engine("postgresql://spring:spring_123@127.0.0.1:5432/spring")
     DBSession = sessionmaker(bind=engine)
     session = DBSession()
-    #     # resource = Resource(id=1006, authors="你好", title="我了个去", url="www.baidu.com")
-    #     # session.add(resource)
-    #     # session.commit()
+    resource = Resource(id=1006, authors="你好", title="我了个去", url="www.baidu.com")
+    session.add(resource)
+    session.commit()
+
     #     resources = session.query(Resource).order_by()
     sql = """
     select

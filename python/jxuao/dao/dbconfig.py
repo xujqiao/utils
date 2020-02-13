@@ -199,7 +199,7 @@ __all__ = ["get_configs_from_file", "DBBasicConfig", "DBPoolConfig"]
 
 
 if __name__ == '__main__':
-    filepath = "./test/config.json"
+    filepath = "../app/config.json"
     config = DBPoolConfig.fromfile(filepath)
     print(config)
     print(DBBasicConfig.__name__)

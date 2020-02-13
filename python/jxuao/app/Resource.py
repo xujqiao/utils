@@ -1,10 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
-from sqlalchemy import Column, String, Integer, Boolean
-from sqlalchemy.ext.declarative import declarative_base
 
-
-Base = declarative_base()
+from dao.base import *
 
 
 class Resource(Base):
@@ -15,5 +12,3 @@ class Resource(Base):
     title = Column(String(100))
     url = Column(String(100))
 
-    def __str__(self):
-        return {c.name: getattr(self, c.name) for c in self.__table__.columns}

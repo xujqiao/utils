@@ -2,11 +2,9 @@
 # -*- coding: utf-8 -*-
 
 import time
-
-from dao.dbgateway import *
-from dao.utils import *
-from dao.dbconfig import *
-from dao.test.Resource import *
+from log.config import logger
+from dao.boot import *
+from app.Resource import *
 
 
 def insert(session, id) -> None:
@@ -29,8 +27,17 @@ def query2(session) -> list:
     return [r for r in rs]
 
 
+def update(session, id) -> None:
+    session.query(Resource) \
+        .filter(Resource.id == id) \
+        .update({Resource.authors: "camxu"})
+
+    session.commit()
+
+
 if __name__ == '__main__':
     basic, pool = get_configs_from_file("config.json")
+    logger.debug("hello")
     print(pool.pool_size)
     db = DBGateway(basic, pool)
 
@@ -44,5 +51,4 @@ if __name__ == '__main__':
         end_time = time.time()
     print(end_time, start_time)
     print((end_id - start_id) / (end_time - start_time))
-
 
